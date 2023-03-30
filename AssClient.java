@@ -36,9 +36,8 @@ public class AssClient {
                 inputLine = in.readLine();
                 if(inputLine.equals("OK")){
                     System.out.println("RCVD: " + inputLine);
-                    
                 }
-
+                
                 if (!inputLine.equals("OK")) {
                     System.err.println("Authentication failed: " + inputLine);
                     System.out.println("Authentication failed: " + inputLine);
@@ -51,27 +50,44 @@ public class AssClient {
                 return;
             }
 
-            
-            
-            
 
             
 
+           
             
 
-
-            while ((inputLine = in.readLine()) != null) {
+            while (true) {
+                out.write("REDY\n".getBytes());
+                out.flush();
+                System.out.println("SENT: REDY"); //sent redy
+                inputLine = in.readLine();
+                System.out.println(inputLine); //JOBN INFO E.g
+                if (inputLine == null) {
+                    System.out.println("test: 2");
+                    break;
+                }
                 fields = inputLine.split("\\s+");
-                if (fields[0].equals("NONE")) {
+                
+             
+                if (fields[0].equals("NONE")) { //NONE
+                    System.out.println("QUIT");
                     out.write("QUIT\n".getBytes());
                     out.flush();
                     in.readLine();
                     break;
-                } else if (fields[0].equals("REDY")) {
+                } else if (fields[0].equals("JOBN")) {
                     out.write("GETS All\n".getBytes());
                     out.flush();
                     System.out.println("SENT: GETS ALL");
+                    inputLine = in.readLine(); //data 184 124
+                    System.out.println(inputLine);
+                    out.write("OK\n".getBytes()); 
+                    out.flush();
                     inputLine = in.readLine();
+                    System.out.println(inputLine);
+                    out.write("OK\n".getBytes());
+                    out.flush();
+                    System.out.println("SENT: OK");
                     if (inputLine.startsWith("DATA")) {
                         fields = inputLine.split("\\s+");
                         nServers = Integer.parseInt(fields[1]);
@@ -92,40 +108,51 @@ public class AssClient {
                     }
                     out.write("REDY\n".getBytes());
                     out.flush();
-                } else if (fields[0].equals("JOBN")) {
+               } else if (fields[0].equals("JOBN")) {
+                    System.out.println("test: 3.1");
                     int jobId = Integer.parseInt(fields[2]);
+                    System.out.println("test: 3.2");
                     int jobTime = Integer.parseInt(fields[3]);
+                    System.out.println("test: 3.3");
                     int jobCores = Integer.parseInt(fields[4]);
+                    System.out.println("test: 3.4");
                     int jobMem = Integer.parseInt(fields[5]);
+                    System.out.println("test: 3.5");
                     out.write(("SCHD " + jobId + " " + getServerType(nServers, serverCores, jobCores, nextServerIndex) + " 0\n").getBytes());
+                    System.out.println("test: 3.6");
                     out.flush();
+                    System.out.println("test: 69");
                     nextServerIndex = (nextServerIndex + 1) % largestServerCount;
+                    System.out.println("test: 5");
                 }
             }
             
 
-        } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-            
-        }
-    }
 
-    private static int getServerType(int nServers, int[] serverCores, int jobCores, int startIndex) {
-        int largestServerType = -1;
-        int largestServerCores = -1;
-        int largestServerCount = -1;
-        int nextServerIndex = startIndex;
-
-        
-       	for(int i = 0; i < nServers; i++) {
-            int serverIndex = (nextServerIndex + i) % nServers;	
-            if (serverCores[serverIndex] >= jobCores) {
-                if (largestServerType == -1 || serverCores[serverIndex] < largestServerCores || (serverCores[serverIndex] == largestServerCores && largestServerCount > 1)) {
-                    largestServerType = serverIndex;
-                    largestServerCores = serverCores[serverIndex];
-                    largestServerCount = 1;
-                }
+        } //try }
+    
+            catch (Exception e) {
+                System.err.println("Error: " + e.getMessage());
+                
             }
         }
-        return largestServerType;
-    }}
+        private static int getServerType(int nServers, int[] serverCores, int jobCores, int startIndex) {
+            int largestServerType = 0;
+            int largestServerCores = serverCores[0];
+            int largestServerCount = 1;
+            int nextServerIndex = startIndex;
+    
+            
+               for(int i = 0; i < nServers; i++) {
+                int serverIndex = (nextServerIndex + i) % nServers;	
+                if (serverCores[serverIndex] >= jobCores) {
+                    if (largestServerType == -1 || serverCores[serverIndex] < largestServerCores || (serverCores[serverIndex] == largestServerCores && largestServerCount > 1)) {
+                        largestServerType = serverIndex;
+                        largestServerCores = serverCores[serverIndex];
+                        largestServerCount = 1;
+                    }
+                }
+            }
+            return largestServerType;
+        }
+}
