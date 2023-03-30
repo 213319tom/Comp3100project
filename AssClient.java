@@ -11,24 +11,6 @@ public class AssClient {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
-            
-
-            out.write("HELO\n".getBytes());
-            out.flush();
-            inputLine = in.readLine();
-            if (inputLine.equals("OK")) {
-                out.write("AUTH 47121696\n".getBytes());
-                out.flush();
-                inputLine = in.readLine();
-                if (!inputLine.equals("OK")) {
-                    System.err.println("Authentication failed: " + inputLine);
-                    return;
-                }
-            } else {
-                System.err.println("Handshake failed: " + inputLine);
-                return;
-            }
-
             String inputLine;
             String[] fields;
             int nServers = 0;
@@ -37,6 +19,71 @@ public class AssClient {
             int largestServerCores = -1;
             int largestServerCount = -1;
             int nextServerIndex = 0;
+
+
+              
+           // out.write(("HELO\n").getBytes()); 
+           // out.flush(); 
+           // System.out.println("SENT: HELO"); 
+
+            //inputLine = in.readLine(); 
+            //System.out.println("RCVD: " + inputLine);
+                
+                
+                
+            //out.write(("AUTH 47121696\n").getBytes());
+            //out.flush(); 
+            //System.out.println("SENT: AUTH");
+                
+            //inputLine = in.readLine();
+            //System.out.println("RCVD: " + inputLine);                 
+                
+            //out.write(("REDY\n").getBytes());
+            //out.flush(); 
+            //System.out.println("SENT: REDY");
+                
+            //inputLine = in.readLine();
+            //System.out.println("RCVD: " + inputLine); 
+
+            //out.write("HELO\n".getBytes());
+            //out.flush();
+
+            out.write("HELO\n".getBytes());
+            out.flush();
+            System.out.println("SENT: HELO"); //send HELO
+            inputLine = in.readLine();
+            if (inputLine.equals("OK")) { //receive OK
+                System.out.println("RCVD: " + inputLine); //print
+                out.write("AUTH 47121696\n".getBytes());
+                out.flush();
+                System.out.println("SENT: AUTH");
+                inputLine = in.readLine();
+                if(inputLine.equals("OK")){
+                    System.out.println("RCVD: " + inputLine);
+                    
+                }
+
+
+                //if (!inputLine.equals("OK")) {
+                  //  System.err.println("Authentication failed: " + inputLine);
+                   // return;
+               // }
+                //else{inputLine = in.readLine();
+                  //  System.out.println("RCVD: " + inputLine);
+
+                //}
+            } else {
+                System.err.println("Handshake failed: " + inputLine);
+                return;
+            }
+
+            
+            
+            
+
+            
+
+            
 
 
             while ((inputLine = in.readLine()) != null) {
@@ -49,6 +96,7 @@ public class AssClient {
                 } else if (fields[0].equals("REDY")) {
                     out.write("GETS All\n".getBytes());
                     out.flush();
+                    System.out.println("SENT: GETS ALL");
                     inputLine = in.readLine();
                     if (inputLine.startsWith("DATA")) {
                         fields = inputLine.split("\\s+");
@@ -80,9 +128,11 @@ public class AssClient {
                     nextServerIndex = (nextServerIndex + 1) % largestServerCount;
                 }
             }
+            
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
+            
         }
     }
 
