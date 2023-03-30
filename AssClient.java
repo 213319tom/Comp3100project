@@ -22,31 +22,7 @@ public class AssClient {
 
 
               
-           // out.write(("HELO\n").getBytes()); 
-           // out.flush(); 
-           // System.out.println("SENT: HELO"); 
-
-            //inputLine = in.readLine(); 
-            //System.out.println("RCVD: " + inputLine);
-                
-                
-                
-            //out.write(("AUTH 47121696\n").getBytes());
-            //out.flush(); 
-            //System.out.println("SENT: AUTH");
-                
-            //inputLine = in.readLine();
-            //System.out.println("RCVD: " + inputLine);                 
-                
-            //out.write(("REDY\n").getBytes());
-            //out.flush(); 
-            //System.out.println("SENT: REDY");
-                
-            //inputLine = in.readLine();
-            //System.out.println("RCVD: " + inputLine); 
-
-            //out.write("HELO\n".getBytes());
-            //out.flush();
+           //
 
             out.write("HELO\n".getBytes());
             out.flush();
@@ -63,17 +39,15 @@ public class AssClient {
                     
                 }
 
-
-                //if (!inputLine.equals("OK")) {
-                  //  System.err.println("Authentication failed: " + inputLine);
-                   // return;
-               // }
-                //else{inputLine = in.readLine();
-                  //  System.out.println("RCVD: " + inputLine);
-
-                //}
+                if (!inputLine.equals("OK")) {
+                    System.err.println("Authentication failed: " + inputLine);
+                    System.out.println("Authentication failed: " + inputLine);
+                    return;
+                }
+                
             } else {
                 System.err.println("Handshake failed: " + inputLine);
+                System.out.println("Handshake failed: " + inputLine);
                 return;
             }
 
