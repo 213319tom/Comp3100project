@@ -63,69 +63,88 @@ public class AssClient {
                 inputLine = in.readLine();
                 System.out.println(inputLine); //JOBN INFO E.g
                 if (inputLine == null) {
-                    System.out.println("test: 2");
+                    System.out.println("NULL"); // print if null
                     break;
-                }
+                } //end if
                 fields = inputLine.split("\\s+");
+                String typeresponse = fields[0];
                 
              
                 if (fields[0].equals("NONE")) { //NONE
-                    System.out.println("QUIT");
+                    System.out.println("QUIT"); //quit if NONE
                     out.write("QUIT\n".getBytes());
                     out.flush();
                     in.readLine();
                     break;
-                } else if (fields[0].equals("JOBN")) {
+                }  //end none
+                if (!fields[0].equals("NONE")) {
                     out.write("GETS All\n".getBytes());
                     out.flush();
-                    System.out.println("SENT: GETS ALL");
+                    System.out.println("SENT: GETS ALL"); //sent GETS ALL
                     inputLine = in.readLine(); //data 184 124
                     System.out.println(inputLine);
                     out.write("OK\n".getBytes()); 
                     out.flush();
-                    inputLine = in.readLine();
-                    System.out.println(inputLine);
-                    out.write("OK\n".getBytes());
-                    out.flush();
-                    System.out.println("SENT: OK");
-                    if (inputLine.startsWith("DATA")) {
+                    System.out.println("SENT: OK"); //send OK
+                   // inputLine = in.readLine();
+                    
+                    if(inputLine.startsWith("DATA")) { //reads data 
                         fields = inputLine.split("\\s+");
                         nServers = Integer.parseInt(fields[1]);
+                        System.out.println("number of servers = " + fields[1]); //print num of servers
                         serverCores = new int[nServers];
-                        for (int i = 0; i < nServers; i++) {
+                        for (int i = 0; i < nServers; i++) { // for 0 to number of servers (184 FOR DS-SERVER)
                             inputLine = in.readLine();
                             fields = inputLine.split("\\s+");
                             serverCores[i] = Integer.parseInt(fields[4]);
-                            if (serverCores[i] > largestServerCores || (serverCores[i] == largestServerCores && largestServerCount < 1)) {
+                            if (serverCores[i] > largestServerCores || (serverCores[i] == largestServerCores && largestServerCount < 1)) { //finds largest server details
                                 largestServerType = i;
                                 largestServerCores = serverCores[i];
                                 largestServerCount = Integer.parseInt(fields[3]);
-                            }
-                        }
-                        out.write("OK\n".getBytes());
+                                
+                            } //end if
+                        } //end for
+                        System.out.println("LargestServerType = " + largestServerType);
+                        System.out.println("LargestServerCores = " + largestServerCores); // print the 3 largest server details
+                        System.out.println("LargestServerCount = " + largestServerCount);
+                        
+                        out.write("OK\n".getBytes()); 
+                        System.out.println("SENT: OK"); //send OK
                         out.flush();
                         in.readLine();
-                    }
-                    out.write("REDY\n".getBytes());
-                    out.flush();
-               } else if (fields[0].equals("JOBN")) {
-                    System.out.println("test: 3.1");
+                        System.out.println(fields[0]);
+                    } //end data
+                    
+              }  //end while loop
+                if (typeresponse.equals("JOBN")) {
                     int jobId = Integer.parseInt(fields[2]);
-                    System.out.println("test: 3.2");
                     int jobTime = Integer.parseInt(fields[3]);
-                    System.out.println("test: 3.3");
                     int jobCores = Integer.parseInt(fields[4]);
-                    System.out.println("test: 3.4");
                     int jobMem = Integer.parseInt(fields[5]);
-                    System.out.println("test: 3.5");
+                    System.out.println("test: 3");
                     out.write(("SCHD " + jobId + " " + getServerType(nServers, serverCores, jobCores, nextServerIndex) + " 0\n").getBytes());
-                    System.out.println("test: 3.6");
+
                     out.flush();
-                    System.out.println("test: 69");
+                    System.out.println(("SCHD " + jobId + " " + getServerType(nServers, serverCores, jobCores, nextServerIndex) + " 0\n"));
                     nextServerIndex = (nextServerIndex + 1) % largestServerCount;
                     System.out.println("test: 5");
                 }
+
+                out.write("REDY\n".getBytes());
+                out.flush();
+                System.out.println("SENT: REDY"); 
+
+
             }
+
+          // out.write("QUIT\n".getBytes());
+           // out.flush();
+           // inputLine = in.readLine();
+           // System.out.println("RCVD: " + inputLine);
+           // out.close();
+           // in.close();
+
+
             
 
 
