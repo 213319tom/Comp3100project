@@ -5,6 +5,7 @@ import java.net.Socket;
 
 public class AssClient {
 
+    
     public static void main(String[] args) {
         try {
             Socket socket = new Socket("127.0.0.1", 50000);
@@ -17,12 +18,18 @@ public class AssClient {
             int[] serverCores = null;
             int largestServerType = -1;
             int largestServerCores = -1;
-            int largestServerCount = -1;
+            int largestServerCount = 0;
             int nextServerIndex = 0;
+            String ServerType = null; 
+            String largestServerTypeName = "placeholder";
+            String lastServer = "0 0 0 0 0 0 0 0";
+            int ServerID = 0;
+            boolean datadone = false;
+            
 
 
               
-           //
+           
 
             out.write("HELO\n".getBytes());
             out.flush();
@@ -60,29 +67,42 @@ public class AssClient {
                 out.write("REDY\n".getBytes());
                 out.flush();
                 System.out.println("SENT: REDY"); //sent redy
-                inputLine = in.readLine();
-                System.out.println(inputLine); //JOBN INFO E.g
+                inputLine = in.readLine(); //servers response
+
+                if(inputLine.equals(".")) { // check if message is DOT
+                    System.out.println("RCVD: " + inputLine); //print DOT
+                    continue; // go to next iteration of the loop
+                }
+                
+                // if(inputLine.equals("OK")){
+                //     out.write("REDY\n".getBytes());
+                //     out.flush();
+                //     inputLine = in.readLine();
+                // }
+                System.out.println("RCVD: " + inputLine); //JOBN INFO E.g
                 if (inputLine == null) {
                     System.out.println("NULL"); // print if null
                     break;
                 } //end if
                 fields = inputLine.split("\\s+");
-                String typeresponse = fields[0];
+                String[]typeresponse = fields;
                 
              
                 if (fields[0].equals("NONE")) { //NONE
-                    System.out.println("QUIT"); //quit if NONE
+                    System.out.println("SENT: QUIT"); //quit if NONE
                     out.write("QUIT\n".getBytes());
                     out.flush();
-                    in.readLine();
+                    inputLine = in.readLine();
+                    System.out.println("RCVD: " + inputLine); 
                     break;
                 }  //end none
-                if (!fields[0].equals("NONE")) {
+
+                if (!fields[0].equals("NONE") && datadone == false) {
                     out.write("GETS All\n".getBytes());
                     out.flush();
                     System.out.println("SENT: GETS ALL"); //sent GETS ALL
                     inputLine = in.readLine(); //data 184 124
-                    System.out.println(inputLine);
+                    System.out.println(inputLine); //prints data numbers
                     out.write("OK\n".getBytes()); 
                     out.flush();
                     System.out.println("SENT: OK"); //send OK
@@ -95,83 +115,105 @@ public class AssClient {
                         serverCores = new int[nServers];
                         for (int i = 0; i < nServers; i++) { // for 0 to number of servers (184 FOR DS-SERVER)
                             inputLine = in.readLine();
+                            System.out.println(inputLine);
                             fields = inputLine.split("\\s+");
                             serverCores[i] = Integer.parseInt(fields[4]);
-                            if (serverCores[i] > largestServerCores || (serverCores[i] == largestServerCores && largestServerCount < 1)) { //finds largest server details
-                                largestServerType = i;
-                                largestServerCores = serverCores[i];
-                                largestServerCount = Integer.parseInt(fields[3]);
+                      
+                            if (serverCores[i] > largestServerCores) { //if cores[i] > maxcores
+                                
+                                if (serverCores[i] > largestServerCores) {
+                                    largestServerTypeName = fields[0];
+                                    largestServerCores = serverCores[i];
+                                    largestServerCount = 1; 
+                                    largestServerType = i;
+                                } else if (serverCores[i] == largestServerCores && fields[0].equals(largestServerTypeName)) {
+                                    largestServerCount++;
+                                }
                                 
                             } //end if
                         } //end for
-                        System.out.println("LargestServerType = " + largestServerType);
+                        System.out.println("LargestServerTypeName = " + largestServerTypeName);
                         System.out.println("LargestServerCores = " + largestServerCores); // print the 3 largest server details
                         System.out.println("LargestServerCount = " + largestServerCount);
                         
-                        out.write("OK\n".getBytes()); 
-                        System.out.println("SENT: OK"); //send OK
+                        out.write("OK\n".getBytes());  
                         out.flush();
-                        in.readLine();
-                        System.out.println(fields[0]);
+                        System.out.println("SENT: OK"); //send OK
+                        //in.readLine();
+                        System.out.println(fields[0]); //print 4xlarge for example (server) 
+                        System.out.println("ID = " + typeresponse[2]); // print jobn for example
+                        System.out.println(typeresponse[0]);
+                        datadone = true; 
                     } //end data
-                    
+                  
               }  //end while loop
-                if (typeresponse.equals("JOBN")) {
-                    int jobId = Integer.parseInt(fields[2]);
-                    int jobTime = Integer.parseInt(fields[3]);
-                    int jobCores = Integer.parseInt(fields[4]);
-                    int jobMem = Integer.parseInt(fields[5]);
-                    System.out.println("test: 3");
-                    out.write(("SCHD " + jobId + " " + getServerType(nServers, serverCores, jobCores, nextServerIndex) + " 0\n").getBytes());
+                if (typeresponse[0].equals("JOBN")) {
+                    
+                 
+
+                    int jobId = Integer.parseInt(typeresponse[2]);
+                    int jobTime = Integer.parseInt(typeresponse[3]);
+                    int jobCores = Integer.parseInt(typeresponse[4]);
+                    int jobMem = Integer.parseInt(typeresponse[5]);
+                    System.out.println("Job information gathered");
+
+                      
+                    
+                    System.out.println("LST = " + largestServerType + " LSCores = " + largestServerCores + " LSCount = " + largestServerCount);
+             // nServers = 7, jobcores = 1, nextserverindex = 0; 
+                    
+                    //    for(int i = 0; i < largestServerCount; i++) { //for all the severs of the highest type
+                    //         int serverIndex = (nextServerIndex + i) % nServers; 
+                    //         System.out.println("serverIndex = " + serverIndex); //serverindex = 0 + 0 mod 7 = 0 (//i = 1 means server index = 0 + 1 mod 7 = 1
+                    //         System.out.println("serverCores[serverIndex] = " + serverCores[serverIndex] + " job cores = " + jobCores); 
+                           // if (serverCores[serverIndex] >= jobCores) { //if servercores[0] >= it is 2 > 1
+                                fields = lastServer.split("\\s+"); //fields = last server as array
+                                System.out.println("lastserver: " + lastServer);  //prints last server 
+                                System.out.println(fields[1]); //prints last server id
+                                ServerID = Integer.parseInt(fields[1]) + 1; //server id is equal to last server id
+
+                                if(ServerID == largestServerCount){
+                                    ServerID = 0; 
+                                }
+
+                                      
+                            //    }
+        
+                        
+                     
+                    //}
+                        
+
+                    
+                    
+
+                    System.out.println("nServers: " + nServers + " serverCores: " + serverCores + " jobCores: " + jobCores + " nextServerIndex: "+ nextServerIndex);
+                    out.write(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "0\n").getBytes());
 
                     out.flush();
-                    System.out.println(("SCHD " + jobId + " " + getServerType(nServers, serverCores, jobCores, nextServerIndex) + " 0\n"));
-                    nextServerIndex = (nextServerIndex + 1) % largestServerCount;
-                    System.out.println("test: 5");
+                    System.out.println(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + " 0\n"));
+                    nextServerIndex = (nextServerIndex + 1) % largestServerCount; 
+                    System.out.println("Job Successful\n");
                 }
 
-                out.write("REDY\n".getBytes());
-                out.flush();
-                System.out.println("SENT: REDY"); 
+                   
 
 
             }
 
-          // out.write("QUIT\n".getBytes());
-           // out.flush();
-           // inputLine = in.readLine();
-           // System.out.println("RCVD: " + inputLine);
-           // out.close();
-           // in.close();
-
+          
 
             
 
-
+        
         } //try }
     
             catch (Exception e) {
                 System.err.println("Error: " + e.getMessage());
-                
-            }
-        }
-        private static int getServerType(int nServers, int[] serverCores, int jobCores, int startIndex) {
-            int largestServerType = 0;
-            int largestServerCores = serverCores[0];
-            int largestServerCount = 1;
-            int nextServerIndex = startIndex;
-    
             
-               for(int i = 0; i < nServers; i++) {
-                int serverIndex = (nextServerIndex + i) % nServers;	
-                if (serverCores[serverIndex] >= jobCores) {
-                    if (largestServerType == -1 || serverCores[serverIndex] < largestServerCores || (serverCores[serverIndex] == largestServerCores && largestServerCount > 1)) {
-                        largestServerType = serverIndex;
-                        largestServerCores = serverCores[serverIndex];
-                        largestServerCount = 1;
-                    }
-                }
             }
-            return largestServerType;
         }
+
+    
+        
 }
