@@ -122,25 +122,15 @@ public class AssClient {
                         } //end if
                     } //end for
                 
-                //    System.out.println("LargestServerTypeName = " + largestServerTypeName);
-                 //   System.out.println("LargestServerCores = " + largestServerCores); // print the 3 largest server details
-                  //  System.out.println("LargestServerCount = " + largestServerCount);
+               
                     
                     out.write("OK\n".getBytes());  //ok ive read data (step 10 done)
                     out.flush();
                     System.out.println("SENT: OK"); //send OK
 
-
-                    //in.readLine();
-                    // System.out.println(fields[0]); //print 4xlarge for example (server) 
-                    // System.out.println("ID = " + typeresponse[2]); // print jobn for example
-                    // System.out.println(typeresponse[0]);
                     datadone = true; 
 
-                    // out.write("REDY\n".getBytes());
-                    // out.flush();
-                    // System.out.println("SENT: REDY"); //sent redy
-                    // inputLine = in.readLine(); //servers response
+                    
                 } //end data
               
             //end while loop
@@ -160,12 +150,7 @@ public class AssClient {
 
                     System.out.println("yep");
 
-                    // out.write("REDY\n".getBytes());
-                    // out.flush();
-                    // System.out.println("SENT: REDY"); //sent redy
                     
-                    // inputLine = in.readLine(); //JOBN X Y Z or NONE OR JCPL
-                    // System.out.println(inputLine);
                     
                     if(firstjob == "NONE"){ //IF NONE...
                         System.out.println("SENT: QUIT"); //quit if NONE
@@ -194,13 +179,7 @@ public class AssClient {
 
                       
                     
-           //         System.out.println("LST = " + largestServerType + " LSCores = " + largestServerCores + " LSCount = " + largestServerCount);
-             
-                         
-                    //fields = lastServer.split("\\s+"); //fields = last server as array
-                    //System.out.println("lastserver: " + lastServer);  //prints last server 
-                    //System.out.println(fields[1]); //prints last server id
-                   // ServerID = Integer.parseInt(fields[1]) + 1; //server id is equal to last server id
+           //         
                     
                    ServerID = lastServerID +1; 
 
@@ -209,23 +188,8 @@ public class AssClient {
                     }
                    
                     lastServerID = ServerID;
-
-                                      
-                            //    }
-        
-                        //0 = -1 + 1 = 0, 0 <3, lsid = 0
-                        //sid = 0 + 1 = 1, 1 < 3, lsid = 1
-                        //sid = 1 + 1 = 2, 2 <3, lsid = 2
-                        //sid = 2 + 1 = 3, 3 ==3, sid = 0, lsid = 0
-                        //sid = 0 + 1= 1  1 <3, lsid = 1
-                     
-                    //}
-                        
-
-                    
-                    
                             
-             //       System.out.println("nServers: " + nServers + " serverCores: " + serverCores + " jobCores: " + jobCores + " nextServerIndex: "+ nextServerIndex);
+             
                     System.out.println(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "\n"));
 
                     out.write(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "\n").getBytes());
@@ -264,15 +228,7 @@ public class AssClient {
              //           System.out.println("Job information gathered"); //GOT THEM ALL 
     
                           
-                        
-               //         System.out.println("LST = " + largestServerType + " LSCores = " + largestServerCores + " LSCount = " + largestServerCount);
-                 
-                             
-                        //fields = lastServer.split("\\s+"); //fields = last server as array
-                        //System.out.println("lastserver: " + lastServer);  //prints last server 
-                        //System.out.println(fields[1]); //prints last server id
-                       // ServerID = Integer.parseInt(fields[1]) + 1; //server id is equal to last server id
-                        
+        
                        ServerID = lastServerID +1; 
 
                         if(ServerID == largestServerCount){
@@ -281,20 +237,7 @@ public class AssClient {
                        
                         lastServerID = ServerID;
     
-                                          
-                                //    }
-            
-                            //0 = -1 + 1 = 0, 0 <3, lsid = 0
-                            //sid = 0 + 1 = 1, 1 < 3, lsid = 1
-                            //sid = 1 + 1 = 2, 2 <3, lsid = 2
-                            //sid = 2 + 1 = 3, 3 ==3, sid = 0, lsid = 0
-                            //sid = 0 + 1= 1  1 <3, lsid = 1
-                         
-                        //}
-                            
-    
-                        
-                        
+                                
                                 
                  //       System.out.println("nServers: " + nServers + " serverCores: " + serverCores + " jobCores: " + jobCores + " nextServerIndex: "+ nextServerIndex);
                         System.out.println(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "\n"));
@@ -318,7 +261,7 @@ public class AssClient {
                     
                     
                    
-       // } //what is this
+       
                 
                 
               //  System.out.println("RCVD2: " + inputLine); //JOBN INFO E.g
@@ -338,16 +281,6 @@ public class AssClient {
                     System.out.println("RCVD: " + inputLine); 
                     //break;
                 }  //end none
-
-            
-
-                   
-
-
-            
-
-    
-
     
 
         
