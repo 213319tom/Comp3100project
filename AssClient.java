@@ -1,3 +1,9 @@
+//COMP3100 PROJECT STAGE 1 
+//WORK BY THOMAS KELLY, 47121696
+
+
+
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -22,7 +28,6 @@ public class AssClient {
             int nextServerIndex = 0;
             String ServerType = null; 
             String largestServerTypeName = "placeholder";
-            String lastServer = "0 0 0 0 0 0 0 0";
             int ServerID = 0;
             int lastServerID = -1;
             boolean datadone = false;
@@ -103,18 +108,19 @@ public class AssClient {
                         serverCores[i] = Integer.parseInt(fields[4]);
                   
                         if (serverCores[i] > largestServerCores) { //if cores[i] > maxcores
-                            
-                            if (serverCores[i] > largestServerCores) {
-                                largestServerTypeName = fields[0];
-                                largestServerCores = serverCores[i];
-                                largestServerCount = 1; 
-                                largestServerType = i;
-                            } else if (serverCores[i] == largestServerCores && fields[0].equals(largestServerTypeName)) {
+                        
+                            largestServerTypeName = fields[0];
+                            largestServerCores = serverCores[i];
+                            largestServerCount = 1; 
+                            largestServerType = i;
+                      } else if (serverCores[i] == largestServerCores && (largestServerTypeName.equals(fields[0])) ) {
                                 largestServerCount++;
-                            }
-                            
+                                System.out.println("another big server: " + largestServerCount);
+                        }
+                    
                         } //end if
                     } //end for
+                
                     System.out.println("LargestServerTypeName = " + largestServerTypeName);
                     System.out.println("LargestServerCores = " + largestServerCores); // print the 3 largest server details
                     System.out.println("LargestServerCount = " + largestServerCount);
@@ -129,7 +135,7 @@ public class AssClient {
                     datadone = true; 
                 } //end data
               
-          }  //end while loop
+            //end while loop
 
 
             
@@ -186,17 +192,22 @@ public class AssClient {
                         //System.out.println(fields[1]); //prints last server id
                        // ServerID = Integer.parseInt(fields[1]) + 1; //server id is equal to last server id
                         
-                       ServerID = lastServerID +1;
+                       ServerID = lastServerID +1; 
 
                         if(ServerID == largestServerCount){
                             ServerID = 0; 
                         }
+                       
                         lastServerID = ServerID;
     
                                           
                                 //    }
             
-                            
+                            //0 = -1 + 1 = 0, 0 <3, lsid = 0
+                            //sid = 0 + 1 = 1, 1 < 3, lsid = 1
+                            //sid = 1 + 1 = 2, 2 <3, lsid = 2
+                            //sid = 2 + 1 = 3, 3 ==3, sid = 0, lsid = 0
+                            //sid = 0 + 1= 1  1 <3, lsid = 1
                          
                         //}
                             
@@ -209,7 +220,7 @@ public class AssClient {
     
                         out.flush();
                         System.out.println("jobID = " + jobId + " jobCores = " + jobCores + " jobMem = " + jobMem);
-                        System.out.println(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + " 0\n"));
+                        System.out.println(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "0\n"));
                         nextServerIndex = (nextServerIndex + 1) % largestServerCount; 
                         System.out.println("Job Successful\n");
                         inputLine = in.readLine(); 
@@ -247,104 +258,7 @@ public class AssClient {
                     break;
                 }  //end none
 
-            //     if (!fields[0].equals("NONE") && datadone == false) {
-            //         out.write("GETS All\n".getBytes());
-            //         out.flush();
-            //         System.out.println("SENT: GETS ALL"); //sent GETS ALL
-            //         inputLine = in.readLine(); //data 184 124
-            //         System.out.println(inputLine); //prints data numbers
-            //         out.write("OK\n".getBytes()); 
-            //         out.flush();
-            //         System.out.println("SENT: OK"); //send OK
-            //        // inputLine = in.readLine();
-                    
-            //         if(inputLine.startsWith("DATA")) { //reads data 
-            //             fields = inputLine.split("\\s+");
-            //             nServers = Integer.parseInt(fields[1]);
-            //             System.out.println("number of servers = " + fields[1]); //print num of servers
-            //             serverCores = new int[nServers];
-            //             for (int i = 0; i < nServers; i++) { // for 0 to number of servers (184 FOR DS-SERVER)
-            //                 inputLine = in.readLine();
-            //                 System.out.println(inputLine);
-            //                 fields = inputLine.split("\\s+");
-            //                 serverCores[i] = Integer.parseInt(fields[4]);
-                      
-            //                 if (serverCores[i] > largestServerCores) { //if cores[i] > maxcores
-                                
-            //                     if (serverCores[i] > largestServerCores) {
-            //                         largestServerTypeName = fields[0];
-            //                         largestServerCores = serverCores[i];
-            //                         largestServerCount = 1; 
-            //                         largestServerType = i;
-            //                     } else if (serverCores[i] == largestServerCores && fields[0].equals(largestServerTypeName)) {
-            //                         largestServerCount++;
-            //                     }
-                                
-            //                 } //end if
-            //             } //end for
-            //             System.out.println("LargestServerTypeName = " + largestServerTypeName);
-            //             System.out.println("LargestServerCores = " + largestServerCores); // print the 3 largest server details
-            //             System.out.println("LargestServerCount = " + largestServerCount);
-                        
-            //             out.write("OK\n".getBytes());  
-            //             out.flush();
-            //             System.out.println("SENT: OK"); //send OK
-            //             //in.readLine();
-            //             System.out.println(fields[0]); //print 4xlarge for example (server) 
-            //             System.out.println("ID = " + typeresponse[2]); // print jobn for example
-            //             System.out.println(typeresponse[0]);
-            //             datadone = true; 
-            //         } //end data
-                  
-            //   }  //end while loop
-            //     if (typeresponse[0].equals("JOBN")) {
-                    
-                 
-
-            //         int jobId = Integer.parseInt(typeresponse[2]);
-            //         int jobTime = Integer.parseInt(typeresponse[3]);
-            //         int jobCores = Integer.parseInt(typeresponse[4]);
-            //         int jobMem = Integer.parseInt(typeresponse[5]);
-            //         System.out.println("Job information gathered");
-
-                      
-                    
-            //         System.out.println("LST = " + largestServerType + " LSCores = " + largestServerCores + " LSCount = " + largestServerCount);
-            //  // nServers = 7, jobcores = 1, nextserverindex = 0; 
-                    
-            //         //    for(int i = 0; i < largestServerCount; i++) { //for all the severs of the highest type
-            //         //         int serverIndex = (nextServerIndex + i) % nServers; 
-            //         //         System.out.println("serverIndex = " + serverIndex); //serverindex = 0 + 0 mod 7 = 0 (//i = 1 means server index = 0 + 1 mod 7 = 1
-            //         //         System.out.println("serverCores[serverIndex] = " + serverCores[serverIndex] + " job cores = " + jobCores); 
-            //                // if (serverCores[serverIndex] >= jobCores) { //if servercores[0] >= it is 2 > 1
-            //                     fields = lastServer.split("\\s+"); //fields = last server as array
-            //                     System.out.println("lastserver: " + lastServer);  //prints last server 
-            //                     System.out.println(fields[1]); //prints last server id
-            //                     ServerID = Integer.parseInt(fields[1]) + 1; //server id is equal to last server id
-
-            //                     if(ServerID == largestServerCount){
-            //                         ServerID = 0; 
-            //                     }
-
-                                      
-            //                 //    }
-        
-                        
-                     
-            //         //}
-                        
-
-                    
-                    
-
-            //         System.out.println("nServers: " + nServers + " serverCores: " + serverCores + " jobCores: " + jobCores + " nextServerIndex: "+ nextServerIndex);
-            //         out.write(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "0\n").getBytes());
-
-            //         out.flush();
-            //         System.out.println(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + " 0\n"));
-            //         nextServerIndex = (nextServerIndex + 1) % largestServerCount; 
-            //         System.out.println("Job Successful\n");
-            //     }
+            
 
                    
 
@@ -353,7 +267,7 @@ public class AssClient {
 
           
 
-            
+        
 
         
         } //try }
