@@ -67,6 +67,7 @@ public class AssClient {
             out.flush();
             System.out.println("SENT: REDY"); //sent redy
             inputLine = in.readLine(); //get jobn
+            String firstjob = inputLine;
 
             System.out.println("RCVD: " + inputLine); //JOBN INFO E.g
             if (inputLine == null) {
@@ -129,23 +130,25 @@ public class AssClient {
                     out.flush();
                     System.out.println("SENT: OK"); //send OK
 
+
                     //in.readLine();
                     // System.out.println(fields[0]); //print 4xlarge for example (server) 
                     // System.out.println("ID = " + typeresponse[2]); // print jobn for example
                     // System.out.println(typeresponse[0]);
                     datadone = true; 
 
-                    out.write("REDY\n".getBytes());
-                    out.flush();
-                    System.out.println("SENT: REDY"); //sent redy
-                    inputLine = in.readLine(); //servers response
+                    // out.write("REDY\n".getBytes());
+                    // out.flush();
+                    // System.out.println("SENT: REDY"); //sent redy
+                    // inputLine = in.readLine(); //servers response
                 } //end data
               
             //end while loop
 
 
             
-
+            inputLine = in.readLine(); //dot
+            System.out.println(inputLine); //dot 
            
             
 
@@ -154,20 +157,95 @@ public class AssClient {
                 //System.out.println("RCVD: " + inputLine); //print DOT
 
                 if(inputLine.equals(".")) { // check if message is DOT
+
+                    System.out.println("yep");
+
+                    // out.write("REDY\n".getBytes());
+                    // out.flush();
+                    // System.out.println("SENT: REDY"); //sent redy
                     
+                    // inputLine = in.readLine(); //JOBN X Y Z or NONE OR JCPL
+                    // System.out.println(inputLine);
                     
-                    inputLine = in.readLine(); //JOBN X Y Z or NONE OR JCPL
-                    
-                    if(inputLine.equals("NONE")){ //IF NONE...
+                    if(firstjob == "NONE"){ //IF NONE...
                         System.out.println("SENT: QUIT"); //quit if NONE
                         out.write("QUIT\n".getBytes());
                         out.flush();
                         inputLine = in.readLine();
                         System.out.println("RCVD: " + inputLine);
                        // break;
+                    }
 
-                    } //end if(none)
- 
+                    // } //end if(none)
+                    if(firstjob.startsWith("JCPL")){
+                        out.write("REDY\n".getBytes());
+                        out.flush();
+                        System.out.println("SENT: REDY");
+                        inputLine = in.readLine();
+                        System.out.println("RCVD: " + inputLine);
+                        
+                    }
+                    fields = firstjob.split("\\s+");
+                    int jobId = Integer.parseInt(fields[2]); //JOB ID
+                    int jobTime = Integer.parseInt(fields[3]); //JOB TIME
+                    int jobCores = Integer.parseInt(fields[4]); //JOB CORES
+                    int jobMem = Integer.parseInt(fields[5]); //JOB MEMORY
+         //           System.out.println("Job information gathered"); //GOT THEM ALL 
+
+                      
+                    
+           //         System.out.println("LST = " + largestServerType + " LSCores = " + largestServerCores + " LSCount = " + largestServerCount);
+             
+                         
+                    //fields = lastServer.split("\\s+"); //fields = last server as array
+                    //System.out.println("lastserver: " + lastServer);  //prints last server 
+                    //System.out.println(fields[1]); //prints last server id
+                   // ServerID = Integer.parseInt(fields[1]) + 1; //server id is equal to last server id
+                    
+                   ServerID = lastServerID +1; 
+
+                    if(ServerID == largestServerCount){
+                        ServerID = 0; 
+                    }
+                   
+                    lastServerID = ServerID;
+
+                                      
+                            //    }
+        
+                        //0 = -1 + 1 = 0, 0 <3, lsid = 0
+                        //sid = 0 + 1 = 1, 1 < 3, lsid = 1
+                        //sid = 1 + 1 = 2, 2 <3, lsid = 2
+                        //sid = 2 + 1 = 3, 3 ==3, sid = 0, lsid = 0
+                        //sid = 0 + 1= 1  1 <3, lsid = 1
+                     
+                    //}
+                        
+
+                    
+                    
+                            
+             //       System.out.println("nServers: " + nServers + " serverCores: " + serverCores + " jobCores: " + jobCores + " nextServerIndex: "+ nextServerIndex);
+                    System.out.println(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "\n"));
+
+                    out.write(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "\n").getBytes());
+
+                    out.flush();
+                    nextServerIndex = (nextServerIndex + 1) % largestServerCount; 
+               //     System.out.println("Job Successful\n");
+                    inputLine = in.readLine(); // ok probably
+                    
+                    System.out.println("RCVD: " + inputLine);
+                    out.write("REDY\n".getBytes());
+                    out.flush();
+                    System.out.println("SENT: REDY");
+                    inputLine = in.readLine();
+                    System.out.println("RCVD: " + inputLine);
+                    fields = inputLine.split("\\s+");
+                }
+                    
+
+
                     while(!inputLine.equals("NONE")){ //IF JOBN...
 
                         if(inputLine.startsWith("JCPL")){
@@ -177,7 +255,7 @@ public class AssClient {
                             inputLine = in.readLine();
                             System.out.println("RCVD: " + inputLine);
                             continue; //back to top
-                        }
+                        } //end of if jcpl
                         fields = inputLine.split("\\s+");
                         int jobId = Integer.parseInt(fields[2]); //JOB ID
                         int jobTime = Integer.parseInt(fields[3]); //JOB TIME
@@ -199,7 +277,7 @@ public class AssClient {
 
                         if(ServerID == largestServerCount){
                             ServerID = 0; 
-                        }
+                        } //serverid if
                        
                         lastServerID = ServerID;
     
@@ -219,9 +297,9 @@ public class AssClient {
                         
                                 
                  //       System.out.println("nServers: " + nServers + " serverCores: " + serverCores + " jobCores: " + jobCores + " nextServerIndex: "+ nextServerIndex);
-                        System.out.println(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + " 0\n"));
+                        System.out.println(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "\n"));
 
-                        out.write(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + " 0\n").getBytes());
+                        out.write(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "\n").getBytes());
     
                         out.flush();
                         nextServerIndex = (nextServerIndex + 1) % largestServerCount; 
@@ -240,7 +318,7 @@ public class AssClient {
                     
                     
                    
-                }
+       // } //what is this
                 
                 
               //  System.out.println("RCVD2: " + inputLine); //JOBN INFO E.g
@@ -268,9 +346,9 @@ public class AssClient {
 
             
 
-          
+    
 
-        
+    
 
         
         } //try }
@@ -280,7 +358,7 @@ public class AssClient {
             
             }
         }
-
+    
     
         
 }
