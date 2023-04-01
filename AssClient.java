@@ -43,7 +43,7 @@ public class AssClient {
             inputLine = in.readLine();
             if (inputLine.equals("OK")) { //receive OK
                 System.out.println("RCVD: " + inputLine); //print
-                out.write("AUTH 47121696\n".getBytes());
+                out.write("AUTH tom\n".getBytes());
                 out.flush();
                 System.out.println("SENT: AUTH");
                 inputLine = in.readLine();
@@ -66,7 +66,7 @@ public class AssClient {
             out.write("REDY\n".getBytes()); //REDY
             out.flush();
             System.out.println("SENT: REDY"); //sent redy
-            inputLine = in.readLine();
+            inputLine = in.readLine(); //get jobn
 
             System.out.println("RCVD: " + inputLine); //JOBN INFO E.g
             if (inputLine == null) {
@@ -90,10 +90,10 @@ public class AssClient {
                 out.flush();
                 System.out.println("SENT: GETS ALL"); //sent GETS ALL
                 inputLine = in.readLine(); //data 184 124
-                System.out.println(inputLine); //prints data numbers
+                //System.out.println(inputLine); //prints data numbers
                 out.write("OK\n".getBytes()); 
                 out.flush();
-                System.out.println("SENT: OK"); //send OK
+                System.out.println("SENT: OK"); //send OK i want data
                // inputLine = in.readLine();
                 
                 if(inputLine.startsWith("DATA")) { //reads data 
@@ -103,7 +103,7 @@ public class AssClient {
                     serverCores = new int[nServers];
                     for (int i = 0; i < nServers; i++) { // for 0 to number of servers (184 FOR DS-SERVER)
                         inputLine = in.readLine(); //input line (first server info)
-                        System.out.println(inputLine);
+               //         System.out.println(inputLine);
                         fields = inputLine.split("\\s+");
                         serverCores[i] = Integer.parseInt(fields[4]);
                   
@@ -115,24 +115,30 @@ public class AssClient {
                             largestServerType = i;
                       } else if (serverCores[i] == largestServerCores && (largestServerTypeName.equals(fields[0])) ) {
                                 largestServerCount++;
-                                System.out.println("another big server: " + largestServerCount);
+                 //               System.out.println("Largest server count: " + largestServerCount);
                         }
                     
                         } //end if
                     } //end for
                 
-                    System.out.println("LargestServerTypeName = " + largestServerTypeName);
-                    System.out.println("LargestServerCores = " + largestServerCores); // print the 3 largest server details
-                    System.out.println("LargestServerCount = " + largestServerCount);
+                //    System.out.println("LargestServerTypeName = " + largestServerTypeName);
+                 //   System.out.println("LargestServerCores = " + largestServerCores); // print the 3 largest server details
+                  //  System.out.println("LargestServerCount = " + largestServerCount);
                     
-                    out.write("OK\n".getBytes());  
+                    out.write("OK\n".getBytes());  //ok ive read data (step 10 done)
                     out.flush();
                     System.out.println("SENT: OK"); //send OK
+
                     //in.readLine();
                     // System.out.println(fields[0]); //print 4xlarge for example (server) 
                     // System.out.println("ID = " + typeresponse[2]); // print jobn for example
                     // System.out.println(typeresponse[0]);
                     datadone = true; 
+
+                    out.write("REDY\n".getBytes());
+                    out.flush();
+                    System.out.println("SENT: REDY"); //sent redy
+                    inputLine = in.readLine(); //servers response
                 } //end data
               
             //end while loop
@@ -143,11 +149,8 @@ public class AssClient {
            
             
 
-            while (true) {
-                out.write("REDY\n".getBytes());
-                out.flush();
-               // System.out.println("SENT: REDY"); //sent redy
-                inputLine = in.readLine(); //servers response
+            //while (true) {
+                
                 //System.out.println("RCVD: " + inputLine); //print DOT
 
                 if(inputLine.equals(".")) { // check if message is DOT
@@ -161,7 +164,7 @@ public class AssClient {
                         out.flush();
                         inputLine = in.readLine();
                         System.out.println("RCVD: " + inputLine);
-                        break;
+                       // break;
 
                     } //end if(none)
  
@@ -180,11 +183,11 @@ public class AssClient {
                         int jobTime = Integer.parseInt(fields[3]); //JOB TIME
                         int jobCores = Integer.parseInt(fields[4]); //JOB CORES
                         int jobMem = Integer.parseInt(fields[5]); //JOB MEMORY
-                        System.out.println("Job information gathered"); //GOT THEM ALL 
+             //           System.out.println("Job information gathered"); //GOT THEM ALL 
     
                           
                         
-                        System.out.println("LST = " + largestServerType + " LSCores = " + largestServerCores + " LSCount = " + largestServerCount);
+               //         System.out.println("LST = " + largestServerType + " LSCores = " + largestServerCores + " LSCount = " + largestServerCount);
                  
                              
                         //fields = lastServer.split("\\s+"); //fields = last server as array
@@ -215,17 +218,17 @@ public class AssClient {
                         
                         
                                 
-                        System.out.println("nServers: " + nServers + " serverCores: " + serverCores + " jobCores: " + jobCores + " nextServerIndex: "+ nextServerIndex);
-                        out.write(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "0\n").getBytes());
+                 //       System.out.println("nServers: " + nServers + " serverCores: " + serverCores + " jobCores: " + jobCores + " nextServerIndex: "+ nextServerIndex);
+                        System.out.println(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + " 0\n"));
+
+                        out.write(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + " 0\n").getBytes());
     
                         out.flush();
-                        System.out.println("jobID = " + jobId + " jobCores = " + jobCores + " jobMem = " + jobMem);
-                        System.out.println(("SCHD " + jobId + " " + largestServerTypeName+ " " + ServerID + "0\n"));
                         nextServerIndex = (nextServerIndex + 1) % largestServerCount; 
-                        System.out.println("Job Successful\n");
+                   //     System.out.println("Job Successful\n");
                         inputLine = in.readLine(); 
                         
-                        System.out.println("RCVD1: " + inputLine);
+                        System.out.println("RCVD: " + inputLine);
                         out.write("REDY\n".getBytes());
                         out.flush();
                         System.out.println("SENT: REDY");
@@ -243,7 +246,7 @@ public class AssClient {
               //  System.out.println("RCVD2: " + inputLine); //JOBN INFO E.g
                 if (inputLine == null) {
                     System.out.println("NULL"); // print if null
-                    break;
+                  //  break;
                 } //end if
                 fields = inputLine.split("\\s+");
                 typeresponse = fields;
@@ -255,7 +258,7 @@ public class AssClient {
                     out.flush();
                     inputLine = in.readLine();
                     System.out.println("RCVD: " + inputLine); 
-                    break;
+                    //break;
                 }  //end none
 
             
@@ -263,7 +266,7 @@ public class AssClient {
                    
 
 
-            }
+            
 
           
 
