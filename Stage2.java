@@ -137,7 +137,8 @@ public class Stage2 {
 
                         //else if(serverCores[i] == largestServerCores && (large))
                     
-                        } //end if
+                        }
+                        int NumOfServerTypes = largestServerTypeNames.size();  //end if
                     } //end for
                 
                
@@ -204,15 +205,23 @@ public class Stage2 {
                     
                         String SCHDlargeServerType = largestServerTypeNames.get(indexloc);
                         int SCHDserverCount = largestServerTypeCounts.get(indexloc);
+                        System.out.println(SCHDserverCount); // 1 for demo run
                         ServerID = lastServerID +1;  //starts as -1 so now 0 
 
-                        if(ServerID == SCHDserverCount){
+                        if(ServerID == SCHDserverCount && indexloc < (largestServerTypeNames.size() -1)){
                             ServerID = 0; 
                             indexloc = indexloc + 1; 
                             SCHDlargeServerType = largestServerTypeNames.get(indexloc);
                             SCHDserverCount = largestServerTypeCounts.get(indexloc);
-                        } //serverid if
+                        } 
+                        
+                        else if(ServerID == SCHDserverCount && indexloc > (largestServerTypeNames.size() - 1)){
+                            ServerID = 0; 
+                            indexloc = 0;
+                            SCHDlargeServerType = largestServerTypeNames.get(indexloc);
+                            SCHDserverCount = largestServerTypeCounts.get(indexloc);
                        
+                        }
                         lastServerID = ServerID;
                     
                         
@@ -261,15 +270,24 @@ public class Stage2 {
 
                         String SCHDlargeServerType = largestServerTypeNames.get(indexloc);
                         int SCHDserverCount = largestServerTypeCounts.get(indexloc);
-                        ServerID = lastServerID +1;  //starts as -1 so now 0 
-
-                        if(ServerID == SCHDserverCount){
+                        ServerID = lastServerID +1;  // one 
+                        System.out.println("ServerID = " + ServerID + " SCHDserverCount = " + SCHDserverCount);
+                        System.out.println("indexloc = " + indexloc);
+                        System.out.println("largestServerTypeNames.size() = " + largestServerTypeNames.size());
+                        if(ServerID == SCHDserverCount && indexloc < (largestServerTypeNames.size() -1)){
                             ServerID = 0; 
                             indexloc = indexloc + 1; 
                             SCHDlargeServerType = largestServerTypeNames.get(indexloc);
                             SCHDserverCount = largestServerTypeCounts.get(indexloc);
-                        } //serverid if
-                       
+                        } 
+                        
+                        else if(ServerID == SCHDserverCount && indexloc >= (largestServerTypeNames.size() - 1)){
+                            ServerID = 0; 
+                            indexloc = 0;
+                            SCHDlargeServerType = largestServerTypeNames.get(indexloc);
+                            SCHDserverCount = largestServerTypeCounts.get(indexloc);
+                        
+                        }
                         lastServerID = ServerID;
     
                                 
